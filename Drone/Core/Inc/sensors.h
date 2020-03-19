@@ -10,7 +10,7 @@
 
 #include "main.h"
 /* High Speed Filter Enabled */
-void L3GD20_Init(uint8_t*, uint8_t*, uint8_t*);
+void L3GD20_Init(uint8_t, uint8_t, uint8_t);
 void L3GD20_Calibrate();
 void L3GD20_XYZrates (float*);
 

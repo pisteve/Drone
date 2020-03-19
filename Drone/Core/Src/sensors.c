@@ -15,21 +15,23 @@ static uint8_t gyro_out[6] = {0};
 static float average[3] = {0};
 
 /* Initialize L3GD20 Control Registers 1,4 and 5 */
-void L3GD20_Init(uint8_t* L3GD20_CTRL_REG1_DATA, uint8_t* L3GD20_CTRL_REG4_DATA, uint8_t* L3GD20_CTRL_REG5_DATA) {
+void L3GD20_Init(uint8_t L3GD20_CTRL_REG1_DATA, uint8_t L3GD20_CTRL_REG4_DATA, uint8_t L3GD20_CTRL_REG5_DATA) {
+
+	uint8_t ctrl1Reg = 0x20, ctrl4Reg = 0x23, ctrl5Reg = 0x24;
 
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_RESET);																	//Chip Select - Pulls line to 0
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG1_ADDR, 1, 50);																//Enable Normal Mode, XYZ rate values, 380 Hz ODR and 25Hz Cut-off
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG1_DATA, 1, 50);
+	HAL_SPI_Transmit(&hspi1, &ctrl1Reg, 1, 50);																//Enable Normal Mode, XYZ rate values, 380 Hz ODR and 25Hz Cut-off
+	HAL_SPI_Transmit(&hspi1, &L3GD20_CTRL_REG1_DATA, 1, 50);
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_SET);																		//Chip Select - Release line back to 1
 
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_RESET);
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG4_ADDR, 1, 50);
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG4_DATA, 1, 50);																//Enable 500dps
+	HAL_SPI_Transmit(&hspi1, &ctrl4Reg, 1, 50);
+	HAL_SPI_Transmit(&hspi1, &L3GD20_CTRL_REG4_DATA, 1, 50);																//Enable 500dps
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_SET);
 
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_RESET);
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG5_ADDR, 1, 50);
-	HAL_SPI_Transmit(&hspi1, L3GD20_CTRL_REG5_DATA, 1, 50);																//Enable High Pass Filter
+	HAL_SPI_Transmit(&hspi1, &ctrl5Reg, 1, 50);
+	HAL_SPI_Transmit(&hspi1, &L3GD20_CTRL_REG5_DATA, 1, 50);																//Enable High Pass Filter
 	HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3, GPIO_PIN_SET);
 
 }

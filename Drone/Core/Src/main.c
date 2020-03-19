@@ -122,7 +122,7 @@ int main(void)
   */
   /* GYRO Testing */
 
-  L3GD20_Init((uint8_t*)0x9f, (uint8_t*)0x90, (uint8_t*)0x10);
+  L3GD20_Init(0x9f, 0x90, 0x10);
 
   L3GD20_Calibrate();
 
