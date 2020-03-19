@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2097185668/append=true
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2097185668/appendContributed=true
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2097185668/compiler_prefix/delimiter=\:
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2097185668/compiler_prefix/operation=replace
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2097185668/compiler_prefix/value=arm-none-eabi-
