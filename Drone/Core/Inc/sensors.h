@@ -15,6 +15,7 @@ void L3GD20_Calibrate();
 void L3GD20_XYZrates (float*);
 void LSM303DLHC_Init();
 void LSM303DLHC_AccReadXYZ(int16_t*);
+void LSM303DLHC_MagReadXYZ(float*);
 
 /******************************************************************************/
 /*************************** START REGISTER MAPPING  **************************/

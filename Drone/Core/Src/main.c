@@ -75,6 +75,7 @@ int main(void)
 
 	int16_t acc_data[3] = {0};
 	float gyro_rates[3] = {0};
+	float mag[3] = {0};
 	float pitch = 0,  roll = 0, yaw = 0, dt = .004;
 	uint32_t refresh_rate = 0;
 
@@ -146,18 +147,20 @@ int main(void)
 
     LSM303DLHC_AccReadXYZ(acc_data);
   	L3GD20_XYZrates(gyro_rates);
+  	LSM303DLHC_MagReadXYZ(mag);
 
   	pitch += gyro_rates[0] * dt;
   	roll += gyro_rates[1] * dt;
   	yaw = gyro_rates[2]*dt;
 
 
-    pitch += roll * sin(yaw * .017455);                  //If the IMU has yawed transfer the roll angle to the pitch angel,
-    roll -= pitch * sin(yaw * .017455);                  //.017455 = pi/180 sin only accepts radians as input
+    pitch += roll * sin(yaw * .01745533);                  //If the IMU has yawed transfer the roll angle to the pitch angel,
+    roll -= pitch * sin(yaw * .01745533);                  //.01745533 = pi/180 sin only accepts radians as input
 
     //pitch = (atan2(acc_data[0],acc_data[2]))*57.2958;
      //roll = (atan2(acc_data[1],acc_data[2]))*57.2958;
-    printf("%5.2f\t\t%5.2f\r\n", pitch,roll);
+    //printf("%5.2f\t\t%5.2f\r\n", pitch,roll);
+    printf("%5.2f\t\t%5.2f\t\t%5.2f\r\n", mag[0],mag[1],mag[2]);
 
   }
   /* USER CODE END 3 */
