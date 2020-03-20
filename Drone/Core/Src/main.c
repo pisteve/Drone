@@ -73,6 +73,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+	int16_t acc_data[3] = {0};
 	float gyro_rates[3] = {0};
 	float pitch = 0,  roll = 0, yaw = 0, dt = .004;
 	uint32_t refresh_rate = 0;
@@ -122,6 +123,8 @@ int main(void)
   */
   /* GYRO Testing */
 
+  LSM303DLHC_Init();
+
   L3GD20_Init(0x9f, 0x90, 0x10);
 
   L3GD20_Calibrate();
@@ -141,6 +144,7 @@ int main(void)
     while(HAL_GetTick() < (refresh_rate + 4)){}
     refresh_rate = HAL_GetTick();
 
+    LSM303DLHC_AccReadXYZ(acc_data);
   	L3GD20_XYZrates(gyro_rates);
 
   	pitch += gyro_rates[0] * dt;
@@ -150,6 +154,9 @@ int main(void)
 
     pitch += roll * sin(yaw * .017455);                  //If the IMU has yawed transfer the roll angle to the pitch angel,
     roll -= pitch * sin(yaw * .017455);                  //.017455 = pi/180 sin only accepts radians as input
+
+    //pitch = (atan2(acc_data[0],acc_data[2]))*57.2958;
+     //roll = (atan2(acc_data[1],acc_data[2]))*57.2958;
     printf("%5.2f\t\t%5.2f\r\n", pitch,roll);
 
   }
