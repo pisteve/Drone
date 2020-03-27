@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -32,6 +33,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "sensors.h"
+#include "controller.h"
+#include "BatteryVoltage.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,8 +75,11 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
 	float eulerAngles[3] = {0};
+	float setpoint[3] = {0};
+	int32_t motorSignal[4] = {0};
+	float voltage = 0;
+
 	uint32_t refresh_rate = 0;
 
   /* USER CODE END 1 */
@@ -100,25 +106,20 @@ int main(void)
   MX_SPI1_Init();
   MX_USB_PCD_Init();
   MX_TIM3_Init();
+  MX_ADC1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  setvbuf(stdin,NULL,_IONBF,0);//add newlib_stubs.c from ahbi git
-  setvbuf(stdout,NULL,_IONBF,0);
-  printf("Hello World!!\r\n");
-  printf("pitch\t\troll\t\tyaw\r\n");
+  //setvbuf(stdin,NULL,_IONBF,0);//add newlib_stubs.c from ahbi git
+  //setvbuf(stdout,NULL,_IONBF,0);
+  //printf("Hello World!!\r\n");
+  //printf("pitch\t\troll\t\tyaw\r\n");
 
-  /* PWM Motor Signal */
-  /*
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  uint32_t duty_cycle_throttle_high = 1000;
-  htim3.Instance->CCR1 = 1000;
+  InitBatteryADC();
+
+  MotorInit();
+
   HAL_Delay(10000);
-  for(int i = duty_cycle_throttle_high; i <= 1135 ;i++){
-  	htim3.Instance->CCR1 = i;
-  	HAL_Delay(1);
-  }
-  */
 
   IMU_Init();
 
@@ -139,8 +140,12 @@ int main(void)
 
     MadgwickAHRS(eulerAngles);
 
-    printf("%5.2f\t\t%5.2f\r\n", eulerAngles[0],eulerAngles[1]);
-    //printf("%i\t\t%i\r\n", mag[1],mag[0]);
+    BatteryVoltage(&voltage);
+
+    MotorCommand(eulerAngles,setpoint,motorSignal);
+
+    //printf("%5.2f\t\t\r\n", voltage);
+    //printf("%i\t\t%i\t\t%i\t\t%i\r\n", motorSignal[0],motorSignal[1],motorSignal[2],motorSignal[3]);
 
   }
   /* USER CODE END 3 */
@@ -184,8 +189,9 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_I2C1;
+                              |RCC_PERIPHCLK_I2C1|RCC_PERIPHCLK_ADC12;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)

@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include "MadgwickAHRS.h"
 
-enum{x,y,z};
 static uint8_t buffer[6] = {0};
 static float average[3] = {0};																														//Average Gyro Drift
 
@@ -44,9 +43,9 @@ void MadgwickAHRS(float* angle) {
   angle[x] = 2*(q0*q2 - q3*q1);																																						//Convert quanternion to euler angles
 
   if (abs(angle[x]) >= 1)
-  		angle[x]  = copysign(M_PI/2,angle[x])*57.2958; 																											//Convert radians to degrees and use 90 degrees if out of range
+  		angle[x]  = copysign(M_PI/2,angle[x])*57.2958+1; 																											//Convert radians to degrees and use 90 degrees if out of range
   else
-  		angle[x] = asin(angle[x])*57.2958;
+  		angle[x] = asin(angle[x])*57.2958+1;
 
 	angle[y] = atan2((2*(q0*q1 + q2*q3)), (1-2*(q1*q1 + q2*q2)))*57.2958-1;																	//Subtract -1 from roll for accelerometer calibration
 
